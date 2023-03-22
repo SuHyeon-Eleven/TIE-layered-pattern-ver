@@ -7,8 +7,8 @@ const fs = require('fs').promises
 const PostsController = require('../controllers/posts.controller')
 const postController = new PostsController
 
-// router.get('/',postsController.getPost)
-// router.get('/',postsController.getPostAll)
+router.get('/:postId',postController.getPost)
+router.get('/',postController.getPostAll)
 router.post('/',authmiddleware,upload.single('img'),postController.createPost)
 router.patch('/:postId',authmiddleware,postController.patchPost)
 router.delete('/:postId',authmiddleware,postController.deletePost)

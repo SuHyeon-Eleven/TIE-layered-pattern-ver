@@ -6,6 +6,26 @@ class PostsController {
     constructor() {
         this.postService = new PostService()
     }
+
+    getPostAll = async (req,res, next)=>{
+        try{
+            const post = await this.postService.findPostAll()
+            res.status(200).json(post)
+        }catch(err){
+            next(err)
+        }
+    }
+
+    getPost = async (req,res,next)=>{
+        try{
+            const { postId } = req.params
+            const post = await this.postService.findPostOne({postId})
+
+            res.status(200).json(post)
+        }catch(err){
+            next(err)
+        }
+    }
     createPost = async (req, res, next) => {
         try {
             if (req.err) {
@@ -16,7 +36,7 @@ class PostsController {
             const user = res.locals.user
             console.log(title, content)
             console.log(user)
-            const result = await this.postService.checkPost({title,content})
+            await this.postService.checkPost({title,content})
             // 이미지가 있으면 파일경로, 없으면 false 반환
             const img = !req.file ? 'false' : `/images/${req.file.filename}`
 
