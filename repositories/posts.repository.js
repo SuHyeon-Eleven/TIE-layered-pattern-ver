@@ -1,7 +1,23 @@
 const { Posts,Users,Sequelize } = require('../models')
 
 class PostsRepository{
+    updatePost = async({title,img,content,postId})=>{
+        await Posts.update({
+            title,
+            img,
+            content,
+        }, {
+            where: { postId },
+            // returning: true
+        })
 
+        const post = await Posts.findOne({
+            raw: true,
+            where: { postId }
+        })
+
+        return post
+    }
     findAll = async () =>{
         let posts = await Posts.findAll({
             raw: true,

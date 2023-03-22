@@ -6,7 +6,28 @@ class PostsController {
     constructor() {
         this.postService = new PostService()
     }
+    updatePost = async (req,res,next) => {
+        try{
+            if(req.err){
+                throw new CustomError(req.err.errMessage,400)
+                // return res.status(400).json(req.err)
+            }
+            const { postId } = req.params
+            const { userId } = res.locals.user
+            const { title, content } = req.body
 
+            const img = !req.file ? 'false' : `/images/${req.file.filename}`
+            const updatePost = await this.postService.updatePost({ postId,userId,img,title,content })
+
+            res.status(200).json(updatePost)
+        }catch(err){
+            console.log(err)
+            if (err instanceof multer.MulterError) {
+                throw new CustomError('이미지 파일만 업로드 할 수 있습니다',400)
+            } 
+            next(err)
+        }
+    }
     getPostAll = async (req,res, next)=>{
         try{
             const post = await this.postService.findPostAll()
