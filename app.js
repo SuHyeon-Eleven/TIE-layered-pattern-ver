@@ -3,10 +3,11 @@ const cors = require('cors')
 require('dotenv').config()
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
+const multer = require('multer')
 const app = express()
 const port = 5000
 const globalRouter = require('./routes')
-const { sequelize }= require('./models')
+const { sequelize } = require('./models')
 
 sequelize.sync({ force: false })
     .then(() => {
@@ -26,11 +27,16 @@ app.use(
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan('dev'))
-
 app.use(express.static('public'))
 
 app.use('/api', globalRouter)
 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(err.status || 500).json({
+        "errorMessage": err.message || "예상하지 못한 에러가 발생하였습니다.",
+    });
+});
 app.listen(port, () => {
     console.log(`listening at http://localhost:${port}`)
 })
