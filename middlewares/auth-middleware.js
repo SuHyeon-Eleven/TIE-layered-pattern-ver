@@ -1,33 +1,33 @@
-const jwt = require('jsonwebtoken')
-const { Users } = require('../models')
-require('dotenv').config()
+const jwt = require('jsonwebtoken');
+const { Users } = require('../models');
+require('dotenv').config();
 
 module.exports = async (req, res, next) => {
-    const { authorization } = req.headers
-    console.log(authorization)
-    const [authType, authToken] = (authorization ?? '').split(' ')
+    const { authorization } = req.headers;
+    console.log(authorization);
+    const [authType, authToken] = (authorization ?? '').split(' ');
 
     if (authType !== 'Bearer' || !authToken) {
         return res.status(401).json({
             errorMessage: '로그인 후에 사용하세요.',
-        })
+        });
     }
 
     try {
-        console.log(authToken)
-        const { userId } = jwt.verify(authToken, process.env.TOKEN_KEY)
-        console.log("아이디이ㅣ",userId)
-        const user = await Users.findOne({ where: { userId } })
-        console.log('미들웨어', user)
-        res.locals.user = user
-        next()
+        console.log(authToken);
+        const { userId } = jwt.verify(authToken, process.env.TOKEN_KEY);
+        console.log('아이디이ㅣ', userId);
+        const user = await Users.findOne({ where: { userId } });
+        console.log('미들웨어', user);
+        res.locals.user = user;
+        next();
     } catch (err) {
-        console.error(err)
+        console.error(err);
         return res.status(401).json({
             errorMessage: '로그인 후에 사용하세요',
-        })
+        });
     }
-}
+};
 /* ------------------------------------------------------------------------------------- */
 // Access Token, Refresh Token
 // module.exports = (req, res, next) => {

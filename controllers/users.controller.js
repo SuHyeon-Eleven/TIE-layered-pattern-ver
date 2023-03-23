@@ -1,49 +1,53 @@
-const UserService = require('../services/users.services')
+const UserService = require('../services/users.services');
 class UserController {
     constructor() {
-        this.userService = new UserService()
+        this.userService = new UserService();
     }
     signUpUser = async (req, res, next) => {
         try {
-            const { userId, nickname, password, confirm } = req.body
+            const { userId, nickname, password, confirm } = req.body;
             const result = await this.userService.signupUser({
-                userId, nickname, password, confirm
-            })
-            console.log(result)
-            res.json(result)
-
+                userId,
+                nickname,
+                password,
+                confirm,
+            });
+            console.log(result);
+            res.json(result);
         } catch (err) {
-            // res.status(err.status).json({ errMessage: err.message })
-            next(err)
+            next(err);
         }
-    }
+    };
     duplicatedId = async (req, res, next) => {
         try {
-            const { userId } = req.body
+            const { userId } = req.body;
             const result = await this.userService.findById({
-                userId
-            })
-            res.json(result)
+                userId,
+            });
+            res.json(result);
         } catch (err) {
             // res.status(err.status).json({ errMessage: err.message })
-            next(err)
+            next(err);
         }
-    }
+    };
     loginUser = async (req, res, next) => {
         try {
-            const { userId, password } = req.body
-            const result = await this.userService.loginUser({ userId, password })
-            console.log(result)
-            const {token} = result
-            
+            const { userId, password } = req.body;
+            const result = await this.userService.loginUser({
+                userId,
+                password,
+            });
+            console.log(result);
+            const { token } = result;
+
             res.cookie('authorization', `Bearer ${token}`, {
                 httpOnly: false,
                 sameSite: false,
-            })
-            res.json(result)
+            });
+            res.json(result);
         } catch (err) {
-            next(err)
+            next(err);
         }
-    }
+    };
 }
-module.exports = UserController
+module.exports = UserController;
